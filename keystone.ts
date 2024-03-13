@@ -9,6 +9,7 @@ import {
 } from "@keystone-next/keystone/session";
 import { Product } from "./schemas/Product";
 import { ProductImage } from "./schemas/ProductImage";
+import { insertSeedData } from "./seed-data";
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -39,7 +40,12 @@ export default withAuth(
 		db: {
 			adapter: "mongoose",
 			url: databaseUrl,
-			//todo add data seeding
+			async onConnect(keystone) {
+				console.log("Connected to the database!");
+				if (process.argv.includes("--seed-data")) {
+					await insertSeedData(keystone);
+				}
+			},
 		},
 		lists: createSchema({
 			//Schema items goes here
@@ -50,7 +56,6 @@ export default withAuth(
 		ui: {
 			//Show UI to authenticated users
 			isAccessAllowed: ({ session }) => {
-				console.log("SESIJA", session);
 				return !!session?.data;
 			},
 			//TODO: change this for roles
