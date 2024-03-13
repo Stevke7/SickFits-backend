@@ -8,7 +8,16 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+.DS_Store
+haters/
+.next/
+.build/
+layout.md
+variables.env
+.keystone
+*.db
 dist
+dist/
 dist-ssr
 *.local
 

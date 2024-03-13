@@ -4,9 +4,9 @@ import { list } from "@keystone-next/keystone/schema";
 import "dotenv/config";
 
 export const cloudinary = {
-	cloudName: process.eventNames.CLOUDINARY_CLOUD_NAME,
-	apiKey: process.eventNames.CLOUDINARY_KEY,
-	apiSecret: process.eventNames.CLOUDINARY_SECRET,
+	cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+	apiKey: process.env.CLOUDINARY_KEY,
+	apiSecret: process.env.CLOUDINARY_SECRET,
 	folder: "sickfits",
 };
 
