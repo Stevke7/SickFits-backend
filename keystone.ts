@@ -1,15 +1,16 @@
 import "dotenv/config";
 import { createSchema, config } from "@keystone-next/keystone/schema";
-import { User } from "./schemas/User";
 import { createAuth } from "@keystone-next/auth";
 import { password } from "@keystone-next/fields";
 import {
 	withItemData,
 	statelessSessions,
 } from "@keystone-next/keystone/session";
+import { User } from "./schemas/User";
 import { Product } from "./schemas/Product";
 import { ProductImage } from "./schemas/ProductImage";
 import { insertSeedData } from "./seed-data";
+import { sendPasswordResetEmail } from "./lib/mail";
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -24,7 +25,13 @@ const { withAuth } = createAuth({
 	secretField: "password",
 	initFirstItem: {
 		fields: ["name", "email", "password"],
-		//TODO Initial roles here
+		// TODO Initial roles here
+	},
+
+	passwordResetLink: {
+		async sendToken(args) {
+			await sendPasswordResetEmail(args.token, args.identity);
+		},
 	},
 });
 
@@ -48,17 +55,15 @@ export default withAuth(
 			},
 		},
 		lists: createSchema({
-			//Schema items goes here
+			// Schema items goes here
 			User,
 			Product,
 			ProductImage,
 		}),
 		ui: {
-			//Show UI to authenticated users
-			isAccessAllowed: ({ session }) => {
-				return !!session?.data;
-			},
-			//TODO: change this for roles
+			// Show UI to authenticated users
+			isAccessAllowed: ({ session }) => !!session?.data,
+			// TODO: change this for roles
 		},
 		session: withItemData(statelessSessions(sessionConfig), {
 			User: "id",
